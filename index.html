@@ -1142,8 +1142,34 @@ body { box-sizing: border-box; padding: 16px; }
         button.disabled = true;
         button.textContent = '作成中…';
         try {
-          const bg = getComputedStyle(root).getPropertyValue('--background').trim();
-          const canvas = await html2canvas(capture, { backgroundColor: bg || null, scale: 2 });
+          const tierColors = ['#713a20', '#6b5c21', '#285f3d', '#304f78', '#563d70'];
+          const canvas = await html2canvas(capture, {
+            backgroundColor: '#181818',
+            scale: 2,
+            onclone: documentClone => {
+              const clone = documentClone.getElementById('atm-capture');
+              clone.style.color = '#f5f5f5';
+              clone.querySelectorAll('.atm-tier').forEach(tier => {
+                tier.style.borderColor = '#333333';
+              });
+              clone.querySelectorAll('.atm-label').forEach((label, index) => {
+                label.style.color = '#ffffff';
+                label.style.backgroundColor = tierColors[index];
+                label.style.borderColor = '#333333';
+              });
+              clone.querySelectorAll('.atm-dropzone').forEach(zone => {
+                zone.style.backgroundColor = '#202020';
+                zone.style.borderColor = '#3a3a3a';
+              });
+              clone.querySelectorAll('.atm-tile').forEach(tile => {
+                tile.style.backgroundColor = '#242424';
+                tile.style.borderColor = '#444444';
+              });
+              clone.querySelectorAll('.text-muted').forEach(text => {
+                text.style.color = '#a8a8a8';
+              });
+            }
+          });
           const blob = await new Promise((resolve, reject) => {
             canvas.toBlob(value => value ? resolve(value) : reject(new Error('画像を作成できませんでした')), 'image/png');
           });
